@@ -1,12 +1,12 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <sys/socket.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
+#include <sys/types.h>
 #include <arpa/inet.h>
+#include <netinet/in.h>
 #define PORT 8080
+
 
 struct details{
         int rollno;
@@ -14,69 +14,53 @@ struct details{
         int dept;
     };
 
-
 int main(int argc, char const *argv[])
 {
-    int sock, clisock;
-    int len,a;
-    char *buffer;
+    int servsock, clisock;
     struct sockaddr_in server, client;
+    int clilen, servlen;
+    char *buffer;
     struct details s;
-    if((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0){
-        perror("socket creation failed");
+
+
+
+    if((servsock = socket(AF_INET, SOCK_DGRAM, 0)) < 0 ){
+        perror("socket connection failed");
         exit(EXIT_FAILURE);
     }
-
-    bzero((struct sockaddr*)&server, sizeof(server));
-    bzero((struct sockaddr*)&client, sizeof(client));
+    bzero((struct *sockaddr)&servsock, sizeof(servsock));
+    bzero((struct *sockaddr)&clisock, sizeof(clisock));
 
     server.sin_family = AF_INET;
     server.sin_port = htons(PORT);
     server.sin_addr.s_addr = htons(INADDR_ANY);
 
-    if((bind(sock, (struct sockaddr*)&server, sizeof(server))) < 0){
+    if((bind(server, (struct *sockaddr)&server, sizeof(server))) < 0){
         perror("bind failed");
         exit(EXIT_FAILURE);
     }
-
-    if(listen(sock, 5) < 0){
-        perror("listen failed");
-        exit(EXIT_FAILURE);
-    }
-
-    len = sizeof(client);
-
-    clisock = accept(sock, (struct sockaddr*)&client, &len);
-
-    if(clisock < 0){
-        perror("accept failed");
-        exit(EXIT_FAILURE);
-    }
+    clilen = sizeof(client);
 
     do{
-        read(clisock, &s, sizeof(s));
+        recvfrom(servsock, &s, sizeof(s), 0, (struct *sockaddr)&client, &clilen);
         if(s.dept == 1){
             buffer = "\n we have a common interest as cs";
-            write(clisock, buffer, 1024);
+            printf("%d", sizeof(buffer));
+            sendto(servsock, buffer, 1024, 0, (struct sockaddr*) &client, clilen);
         }
         else{
             buffer = "\nwe dont have a common interest";
-            write(clisock, buffer, 1024);
-
+            sendto(servsock, buffer, 1024, 0, (struct sockaddr*) &client, clilen);
         }
-
         printf("\npress 0 to exit");
         printf("\n");
 
-        // printf("\nserver: ");
         scanf("%d", &a);
-
-
     }while(a != 0);
 
-    close(sock);
+    close(servsock);
     close(clisock);
-
-    
     return 0;
 }
+
+
