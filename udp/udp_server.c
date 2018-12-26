@@ -45,6 +45,8 @@ int main(int argc, char const *argv[])
     clilen = sizeof(client);
 
     do{
+            fflush(stdin);
+
         recvfrom(servsock, &s, sizeof(s), 0, (struct sockaddr*)&client, &clilen);
         if(s.dept == 1){
             buffer = "\n we have a common interest as cs";
@@ -54,11 +56,12 @@ int main(int argc, char const *argv[])
             buffer = "\nwe dont have a common interest";
             sendto(servsock, buffer, 1024, 0, (struct sockaddr*) &client, clilen);
         }
-        printf("\npress 0 to exit");
-        printf("\n");
 
-        scanf("%d", &a);
-    }while(a != 0);
+        // printf("\npress 0 to exit");
+        // printf("\n");
+
+        // scanf("%d", &a);
+    }while(1);
 
     close(servsock);
     close(clisock);
