@@ -45,11 +45,8 @@ int main(int argc, char const *argv[])
             scanf("%d", &s.dept);
             
             sendto(clisock, &s, sizeof(s), 0, (struct sockaddr*) &client, sizeof(client));
-            write(clisock, &s, sizeof(s));
-            listen(clisock,1);
             
             recvfrom(clisock, buffer, 1024, 0, (struct sockaddr*) &client, &clientsize);
-            read(clisock, buffer, sizeof(buffer));
             printf("Server: %s\n", buffer);
 
             printf("\npress 0 to exit");
