@@ -22,6 +22,7 @@ int main(int argc, char const *argv[])
     int clilen, servlen;
     char *buffer;
     struct details s;
+    int a;
 
 
 
@@ -29,24 +30,24 @@ int main(int argc, char const *argv[])
         perror("socket connection failed");
         exit(EXIT_FAILURE);
     }
-    bzero((struct *sockaddr)&servsock, sizeof(servsock));
-    bzero((struct *sockaddr)&clisock, sizeof(clisock));
+    bzero((struct sockaddr*)&server, sizeof(server));
+    bzero((struct sockaddr*)&client, sizeof(client));
+
 
     server.sin_family = AF_INET;
     server.sin_port = htons(PORT);
     server.sin_addr.s_addr = htons(INADDR_ANY);
 
-    if((bind(server, (struct *sockaddr)&server, sizeof(server))) < 0){
+    if((bind(servsock, (struct sockaddr*)&server, sizeof(server))) < 0){
         perror("bind failed");
         exit(EXIT_FAILURE);
     }
     clilen = sizeof(client);
 
     do{
-        recvfrom(servsock, &s, sizeof(s), 0, (struct *sockaddr)&client, &clilen);
+        recvfrom(servsock, &s, sizeof(s), 0, (struct sockaddr*)&client, &clilen);
         if(s.dept == 1){
             buffer = "\n we have a common interest as cs";
-            printf("%d", sizeof(buffer));
             sendto(servsock, buffer, 1024, 0, (struct sockaddr*) &client, clilen);
         }
         else{

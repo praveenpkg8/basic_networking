@@ -19,6 +19,7 @@ int main(int argc, char const *argv[])
     struct sockaddr_in client;
     char buffer[1024];
     socklen_t clientsize;
+    int a;
     
     struct details s;
 
@@ -26,7 +27,7 @@ int main(int argc, char const *argv[])
         printf("socket connection failed");
     }
 
-    bzero((struct *sockaddr)&client, sizeof(client));
+    bzero((struct sockaddr*)&client, sizeof(client));
     client.sin_family = AF_INET;
     client.sin_port = htons(PORT);
     client.sin_addr.s_addr = htons(INADDR_ANY);
@@ -47,7 +48,7 @@ int main(int argc, char const *argv[])
             write(clisock, &s, sizeof(s));
             listen(clisock,1);
             
-            recvfrom(clisock, buffer, 1024, 0, (struct sockaddr*) &client, &clientSize);
+            recvfrom(clisock, buffer, 1024, 0, (struct sockaddr*) &client, &clientsize);
             read(clisock, buffer, sizeof(buffer));
             printf("Server: %s\n", buffer);
 
@@ -58,7 +59,7 @@ int main(int argc, char const *argv[])
         }while( a != 0);
 
     
-    close(client);
+    close(clisock);
     
     return 0;
 }
