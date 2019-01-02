@@ -38,14 +38,19 @@ int main(int argc, char const *argv[])
 
     do
     {
-        printf("Enter the name: ");
-        scanf("%s", s.name);
+         printf("Enter the name: ");
+            gets(s.name);
 
-        printf("Enter the roll no: ");
-        scanf("%d", &s.rollno);
+            printf("Enter the roll no: ");
+            scanf("%d", &s.rollno);
 
-        printf("Enter the department: ");
-        scanf("%d", &s.dept);
+            printf("Departments: \n ");
+            printf("1. computer science \n ");
+            printf("2. Information Technology \n ");
+            printf("3. Mechanical \n ");
+            printf("4. Electical \n ");
+            printf("5. communication \n");
+
 
         write(clisock, &s, sizeof(s));
         listen(clisock,1);
@@ -53,7 +58,7 @@ int main(int argc, char const *argv[])
         read(clisock, buffer, sizeof(buffer));
         printf("Server: %s\n", buffer);
 
-        printf("\npress 0 to exit");
+        printf("\npress 0 to exit and to continue press any key");
         printf("\n");
         scanf("%d", &a);
 
